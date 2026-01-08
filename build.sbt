@@ -27,7 +27,7 @@ libraryDependencies ++= Seq(
 enablePlugins(GitVersioning)
 
 resolvers +=
-  "Sonatype OSS Snapshots" at "https://oss.sonatype.org/service/local/repositories/releases/content"
+  "Sonatype OSS Releases" at "https://repo1.maven.org/maven2/"
 
 ThisBuild / scmInfo := Some(
   ScmInfo(
@@ -58,12 +58,12 @@ ThisBuild / organizationHomepage := Some(url("https://github.com/music-of-the-ai
 
 
 // Remove all additional repository other than Maven Central from POM
-credentials += Credentials(Path.userHome / ".sbt" / "sonatype_credential")
+credentials += Credentials(Path.userHome / ".sbt" / "sonatype_central_credentials")
 ThisBuild / pomIncludeRepository := { _ => false }
 ThisBuild / publishTo := {
-  val nexus = "https://oss.sonatype.org/"
-  if (isSnapshot.value) Some("snapshots" at nexus + "content/repositories/snapshots")
-  else Some("releases" at nexus + "service/local/staging/deploy/maven2")
+  val centralSnapshots = "https://central.sonatype.com/repository/maven-snapshots/"
+  if (version.value.endsWith("-SNAPSHOT")) Some("central-snapshots" at centralSnapshots)
+  else localStaging.value
 }
 
 ThisBuild / publishMavenStyle := true
